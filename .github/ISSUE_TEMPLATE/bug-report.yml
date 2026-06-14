@@ -1,0 +1,82 @@
+name: "🐛 Bug Report"
+description: Reportar um problema visual, de layout ou funcionalidade no site.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Bug Report — Take Care All The Time
+        Preencha os detalhes para que possamos reproduzir e corrigir o problema rapidamente.
+        Adicione o label **`copilot-task`** após salvar para acionar o Coding Agent.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Área afetada
+      options:
+        - Layout / Responsividade
+        - Navbar / Menu
+        - Hero / Banner principal
+        - Cards de modalidades
+        - Card de Natação (destaque)
+        - Footer / Parceiro Boa Farma
+        - Animações / Transições
+        - Performance
+        - Acessibilidade
+        - Outro
+    validations:
+      required: true
+
+  - type: textarea
+    id: descricao
+    attributes:
+      label: Descrição do problema
+      description: Descreva o que está acontecendo de errado.
+      placeholder: O card de Natação quebra o layout em mobile — a imagem transborda para fora do container em viewports menores que 375px.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproducao
+    attributes:
+      label: Passos para reproduzir
+      placeholder: |
+        1. Abrir o site em mobile (375px de largura)
+        2. Rolar até a seção Modalidades
+        3. Observar o card de Natação
+        4. A imagem transborda horizontalmente
+    validations:
+      required: true
+
+  - type: textarea
+    id: esperado
+    attributes:
+      label: Comportamento esperado
+      placeholder: A imagem deve ficar contida dentro do card, sem overflow horizontal.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: dispositivo
+    attributes:
+      label: Dispositivo / Viewport afetado
+      multiple: true
+      options:
+        - Mobile (< 640px)
+        - Tablet (640px – 960px)
+        - Desktop (> 960px)
+        - Todos os viewports
+    validations:
+      required: true
+
+  - type: input
+    id: navegador
+    attributes:
+      label: Navegador
+      placeholder: Chrome 125, Safari 17, Firefox 126…
+
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: Screenshot ou vídeo
+      description: Cole uma imagem ou link de vídeo mostrando o problema.

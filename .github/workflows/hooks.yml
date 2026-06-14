@@ -1,0 +1,119 @@
+name: Hooks — Lifecycle Gates
+
+# Hooks de ciclo de vida para o site Take Care All The Time.
+# Executados como gates antes e após eventos críticos.
+#
+# Hook points:
+#   pre-deploy   → validação antes de qualquer merge na main
+#   post-deploy  → verificação após deploy bem-sucedido
+#   pre-review   → checklist automático em PRs abertas
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, ready_for_review]
+  workflow_run:
+    workflows: ["CI — Pipeline de Qualidade e Deploy"]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  # ── HOOK: pre-review ───────────────────────────────────────────────────────
+  # Dispara quando uma PR é aberta ou atualizada.
+  # Publica checklist de revisão como comentário na PR.
+  pre-review:
+    name: Hook — Pre-Review Checklist
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Detectar arquivos alterados
+        id: changes
+        run: |
+          git fetch origin ${{ github.base_ref }} --depth=1
+          CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | tr '\n' ' ')
+          echo "files=${CHANGED}" >> $GITHUB_OUTPUT
+          echo "Arquivos alterados: $CHANGED"
+
+      - name: Publicar checklist de revisão
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const changed = '${{ steps.changes.outputs.files }}';
+            const hasHTML = changed.includes('index.html');
+            const hasCSS  = changed.includes('style.css');
+            const hasJS   = changed.includes('main.js');
+
+            let checks = ['## 🔍 Checklist de Revisão — Automático\n'];
+            checks.push('> Gerado pelo Hook pre-review · Revise cada item antes de aprovar.\n');
+
+            if (hasHTML) {
+              checks.push('### HTML (`index.html`)');
+              checks.push('- [ ] Tags semânticas corretas (`<section>`, `<nav>`, `<footer>`)');
+              checks.push('- [ ] Todo `<img>` possui `alt` descritivo em PT-BR');
+              checks.push('- [ ] IDs de âncora `#home` e `#modalidades` preservados');
+              checks.push('- [ ] Links externos com `rel="noopener noreferrer"`\n');
+            }
+            if (hasCSS) {
+              checks.push('### CSS (`style.css`)');
+              checks.push('- [ ] Variáveis CSS (`--orange`, `--bg`, etc.) usadas');
+              checks.push('- [ ] Mobile-first respeitado (sem `max-width` no base)');
+              checks.push('- [ ] Breakpoints corretos: `640px` e `960px`\n');
+            }
+            if (hasJS) {
+              checks.push('### JavaScript (`main.js`)');
+              checks.push('- [ ] Nenhum `eval()` ou `innerHTML` com dados externos');
+              checks.push('- [ ] Scroll listeners com `{ passive: true }`');
+              checks.push('- [ ] IIFE + `"use strict"` mantidos\n');
+            }
+
+            checks.push('### Geral');
+            checks.push('- [ ] Testado em mobile (375px)');
+            checks.push('- [ ] Testado em tablet (640px) e desktop (1280px)');
+            checks.push('- [ ] Commit segue Conventional Commits em PT-BR');
+            checks.push('- [ ] PR referencia a issue com `Closes #N`');
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: checks.join('\n')
+            });
+
+  # ── HOOK: post-deploy ──────────────────────────────────────────────────────
+  # Dispara após o workflow de CI/Deploy ser concluído com sucesso.
+  post-deploy:
+    name: Hook — Post-Deploy Verification
+    if: >
+      github.event_name == 'workflow_run' &&
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verificar URL do site após deploy
+        run: |
+          REPO="${{ github.repository }}"
+          OWNER=$(echo $REPO | cut -d'/' -f1)
+          REPO_NAME=$(echo $REPO | cut -d'/' -f2)
+          PAGES_URL="https://${OWNER}.github.io/${REPO_NAME}/"
+
+          echo "Verificando disponibilidade de: $PAGES_URL"
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$PAGES_URL" || echo "000")
+
+          if [ "$STATUS" = "200" ]; then
+            echo "✅ Site disponível — HTTP $STATUS"
+          else
+            echo "⚠️  Site retornou HTTP $STATUS — pode ainda estar propagando"
+          fi
+
+      - name: Resumo pós-deploy
+        run: |
+          echo "### ✅ Hook Post-Deploy executado" >> $GITHUB_STEP_SUMMARY
+          echo "- Workflow upstream: ${{ github.event.workflow_run.name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Conclusão: ${{ github.event.workflow_run.conclusion }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Commit: \`${{ github.event.workflow_run.head_sha }}\`" >> $GITHUB_STEP_SUMMARY

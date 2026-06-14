@@ -1,0 +1,31 @@
+# Arquivos gerados pelo sistema operacional (Windows)
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editores
+.vscode/settings.json
+.vscode/launch.json
+.vscode/extensions.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*~
+
+# Logs
+*.log
+npm-debug.log*
+
+# Node (caso venha a usar ferramentas de lint)
+node_modules/
+
+# Ambiente local
+.env
+.env.local

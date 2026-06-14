@@ -1,0 +1,81 @@
+name: "🚀 Feature Request"
+description: Solicitar uma nova funcionalidade, seção ou melhoria para o site da academia.
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Nova Feature — Take Care All The Time
+        Preencha os campos abaixo para registrar sua solicitação.
+        Adicione o label **`copilot-task`** após salvar para que o Coding Agent crie a branch e o PR automaticamente.
+
+  - type: dropdown
+    id: tipo
+    attributes:
+      label: Tipo de alteração
+      description: Qual categoria melhor descreve sua solicitação?
+      options:
+        - Nova modalidade
+        - Nova seção (horários, planos, depoimentos…)
+        - Ajuste visual / identidade
+        - Conteúdo (textos, imagens)
+        - Parceiros / patrocinadores
+        - Performance / SEO
+        - Acessibilidade
+        - Outro
+    validations:
+      required: true
+
+  - type: textarea
+    id: descricao
+    attributes:
+      label: Descrição da feature
+      description: Descreva o que deve ser implementado e por quê é valioso para os alunos/visitantes.
+      placeholder: |
+        Ex: Adicionar a modalidade de Pilates com card padrão, badge "Equilíbrio e força", emoji 🧘‍♀️.
+        Descrição: "Desenvolva flexibilidade e força do core em aulas..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: criterios
+    attributes:
+      label: Critérios de aceite
+      description: Como saberemos que a feature está pronta e correta?
+      placeholder: |
+        - [ ] Card de Pilates aparece antes do card de Natação
+        - [ ] Responsivo nos breakpoints 375px, 640px e 960px
+        - [ ] Badge "Equilíbrio e força" visível
+        - [ ] Alt descritivo na imagem (se houver)
+    validations:
+      required: true
+
+  - type: textarea
+    id: referencias
+    attributes:
+      label: Referências visuais ou de conteúdo
+      description: Links, screenshots, textos de referência, URLs do Unsplash, etc.
+      placeholder: |
+        URL Unsplash: https://unsplash.com/photos/...
+        Referência visual: [descrever]
+
+  - type: dropdown
+    id: prioridade
+    attributes:
+      label: Prioridade
+      options:
+        - Alta — bloqueia outra entrega
+        - Média — próximo sprint
+        - Baixa — backlog
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: agente
+    attributes:
+      label: Acionar Coding Agent automaticamente?
+      description: >
+        Marque para que este item seja processado automaticamente.
+        Após salvar a issue, adicione o label **`copilot-task`** para criar branch e PR.
+      options:
+        - label: Sim, quero que o Coding Agent crie a branch e o Draft PR

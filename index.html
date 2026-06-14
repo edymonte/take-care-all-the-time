@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Take Care All The Time — Academia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ─── NAVBAR ─────────────────────────────────────────────────────────── -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="#home" class="nav-logo">
+        <span class="logo-icon">💪</span>
+        <span class="logo-text">Take <em>Care</em> All The Time</span>
+      </a>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#home" class="nav-link active">Home</a></li>
+        <li><a href="#modalidades" class="nav-link">Modalidades</a></li>
+      </ul>
+
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ─── HERO ─────────────────────────────────────────────────────────────── -->
+  <section id="home" class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <p class="hero-tag">Academia Premium</p>
+      <h1 class="hero-title">
+        Take Care<br /><em>All The Time</em>
+      </h1>
+      <p class="hero-subtitle">
+        Cuide do seu corpo. Cuide da sua mente. Cuide da sua vida.
+      </p>
+      <a href="#modalidades" class="btn-cta">Conheça nossas modalidades</a>
+    </div>
+    <div class="hero-scroll-hint">
+      <span>↓</span>
+    </div>
+  </section>
+
+  <!-- ─── MODALIDADES ───────────────────────────────────────────────────────── -->
+  <section id="modalidades" class="section-modalidades">
+    <div class="section-header">
+      <p class="section-tag">O que oferecemos</p>
+      <h2 class="section-title">Nossas <span>Modalidades</span></h2>
+      <p class="section-subtitle">Escolha sua paixão e venha transformar sua vida com a gente.</p>
+    </div>
+
+    <div class="cards-grid">
+
+      <!-- Musculação -->
+      <div class="card">
+        <div class="card-icon">🏋️</div>
+        <h3 class="card-title">Musculação</h3>
+        <p class="card-desc">
+          Equipamentos de última geração e personal trainers especializados para
+          potencializar seus resultados com segurança e evolução constante.
+        </p>
+        <span class="card-badge">Todos os níveis</span>
+      </div>
+
+      <!-- Spinning -->
+      <div class="card">
+        <div class="card-icon">🚴</div>
+        <h3 class="card-title">Spinning</h3>
+        <p class="card-desc">
+          Pedala ao ritmo de músicas animadas em aulas coletivas cheias de energia.
+          Queima calorias, melhora o condicionamento e diverte muito!
+        </p>
+        <span class="card-badge">Alta intensidade</span>
+      </div>
+
+      <!-- Crossfit -->
+      <div class="card">
+        <div class="card-icon">🔥</div>
+        <h3 class="card-title">Crossfit</h3>
+        <p class="card-desc">
+          Treinos funcionais de alta intensidade que desafiam seus limites.
+          Desenvolva força, resistência e agilidade de forma dinâmica e divertida.
+        </p>
+        <span class="card-badge">Desafio máximo</span>
+      </div>
+
+      <!-- Yoga -->
+      <div class="card">
+        <div class="card-icon">🧘</div>
+        <h3 class="card-title">Yoga</h3>
+        <p class="card-desc">
+          Equilíbrio entre corpo e mente através de posturas, respiração e meditação.
+          Reduza o estresse e ganhe flexibilidade em um ambiente tranquilo.
+        </p>
+        <span class="card-badge">Bem-estar total</span>
+      </div>
+
+      <!-- Natação — card destaque com foto de piscina -->
+      <div class="card card-natacao">
+        <div class="natacao-img-wrap">
+          <img
+            src="https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=1200&q=80"
+            alt="Piscina com pessoas felizes nadando"
+            class="natacao-img"
+            loading="lazy"
+          />
+          <div class="natacao-overlay"></div>
+        </div>
+        <div class="natacao-content">
+          <div class="card-icon">🏊</div>
+          <h3 class="card-title">Natação</h3>
+          <p class="card-desc">
+            Nossa piscina semiolímpica aquecida é o espaço perfeito para nadar
+            com alegria e saúde. Turmas para todas as idades, do iniciante ao
+            atleta — venha sentir a leveza da água!
+          </p>
+          <span class="card-badge card-badge-light">Para todas as idades</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ────────────────────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="footer-logo-icon">💪</span>
+        <div>
+          <p class="footer-name">Take Care All The Time</p>
+          <p class="footer-tagline">Sua saúde, nossa missão.</p>
+        </div>
+      </div>
+
+      <div class="footer-parceiros">
+        <p class="parceiro-label">Parceiro oficial</p>
+        <div class="parceiro-badge">
+          <span class="parceiro-cross">✚</span>
+          <div class="parceiro-text">
+            <span class="parceiro-nome">Farmácia</span>
+            <span class="parceiro-nome-destaque">Boa Farma</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-social">
+        <p class="social-label">Siga-nos</p>
+        <div class="social-links">
+          <a href="#" class="social-btn" aria-label="Instagram">📸 Instagram</a>
+          <a href="#" class="social-btn" aria-label="Facebook">👍 Facebook</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 Take Care All The Time · Todos os direitos reservados</p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

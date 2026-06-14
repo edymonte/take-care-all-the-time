@@ -1,0 +1,105 @@
+name: CI — Pipeline de Qualidade e Deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ── JOB 1: Validação de Qualidade ──────────────────────────────────────────
+  validate:
+    name: Validação de Qualidade
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verificar arquivos obrigatórios
+        run: |
+          echo "Verificando estrutura de arquivos obrigatórios..."
+          missing=0
+          for file in index.html css/style.css js/main.js; do
+            if [ ! -f "$file" ]; then
+              echo "❌ Arquivo ausente: $file"
+              missing=1
+            else
+              echo "✅ $file"
+            fi
+          done
+          [ $missing -eq 0 ] || exit 1
+
+      - name: Instalar htmlhint
+        run: npm install -g htmlhint
+
+      - name: Validar HTML
+        run: |
+          htmlhint index.html --config '{"tagname-lowercase":true,"attr-lowercase":true,"attr-value-double-quotes":true,"doctype-first":true,"tag-pair":true,"spec-char-escape":true,"id-unique":true,"src-not-empty":true,"attr-no-duplication":true,"title-require":true}' \
+          && echo "✅ HTML válido" || exit 1
+
+      - name: Verificar ausência de innerHTML inseguro
+        run: |
+          echo "Verificando padrões de segurança no JS..."
+          if grep -n "innerHTML\s*=" js/main.js 2>/dev/null; then
+            echo "⚠️  Uso de innerHTML detectado em main.js — revise antes do deploy"
+          fi
+          if grep -n "eval(" js/main.js 2>/dev/null; then
+            echo "❌ eval() proibido detectado em main.js!"
+            exit 1
+          fi
+          echo "✅ Verificação de segurança concluída"
+
+      - name: Verificar atributos alt em imagens
+        run: |
+          echo "Verificando acessibilidade (alt em imagens)..."
+          # Busca tags <img> sem alt ou com alt vazio
+          if grep -E '<img[^>]*(?!alt=)[^>]*>' index.html | grep -v 'alt=' ; then
+            echo "⚠️  Podem existir imagens sem alt — revise manualmente"
+          else
+            echo "✅ Verificação de acessibilidade concluída"
+          fi
+
+  # ── JOB 2: Deploy para GitHub Pages (apenas na main) ──────────────────────
+  deploy:
+    name: Deploy — GitHub Pages
+    needs: validate
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artefato para Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy para GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Resumo do deploy
+        run: |
+          echo "### 🚀 Deploy concluído!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**URL:** ${{ steps.deployment.outputs.page_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Autor:** ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY

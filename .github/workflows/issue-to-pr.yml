@@ -1,0 +1,139 @@
+name: Coding Agent — Issue to PR Automático
+
+# Quando uma issue recebe o label 'copilot-task', este workflow:
+#   1. Cria uma branch feat/issue-{number}-{slug}
+#   2. Abre um Draft PR vinculado à issue
+#   3. Comenta na issue com os links criados
+#
+# Para acionar: adicione o label "copilot-task" em qualquer issue.
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  create-branch-and-pr:
+    name: Criar Branch e Draft PR
+    if: github.event.label.name == 'copilot-task'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Gerar nome seguro para a branch
+        id: branch
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          SAFE_TITLE=$(echo "$ISSUE_TITLE" \
+            | tr '[:upper:]' '[:lower:]' \
+            | iconv -f utf-8 -t ascii//TRANSLIT 2>/dev/null || echo "$ISSUE_TITLE" \
+            | sed 's/[^a-z0-9]/-/g' \
+            | sed 's/--*/-/g' \
+            | sed 's/^-//;s/-$//' \
+            | cut -c1-40)
+
+          BRANCH="feat/issue-${ISSUE_NUMBER}-${SAFE_TITLE}"
+          echo "branch=${BRANCH}" >> $GITHUB_OUTPUT
+          echo "Branch gerada: $BRANCH"
+
+      - name: Criar e publicar branch
+        env:
+          BRANCH_NAME: ${{ steps.branch.outputs.branch }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH_NAME"
+          git push origin "$BRANCH_NAME"
+          echo "✅ Branch publicada: $BRANCH_NAME"
+
+      - name: Criar Draft PR
+        id: pr
+        uses: actions/github-script@v7
+        env:
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          BRANCH_NAME: ${{ steps.branch.outputs.branch }}
+        with:
+          script: |
+            const issueNumber = parseInt(process.env.ISSUE_NUMBER);
+            const issueTitle  = process.env.ISSUE_TITLE;
+            const issueBody   = process.env.ISSUE_BODY || '_Sem descrição._';
+            const branchName  = process.env.BRANCH_NAME;
+
+            const prBody = [
+              '## Resolução Automática — Coding Agent',
+              '',
+              `> Este PR foi criado automaticamente a partir da issue #${issueNumber}.`,
+              '',
+              `**Closes #${issueNumber}**`,
+              '',
+              '---',
+              '',
+              '## Contexto da Issue',
+              issueBody,
+              '',
+              '---',
+              '',
+              '## Checklist do Desenvolvedor',
+              '- [ ] Implementação concluída',
+              '- [ ] Testado em mobile (375px), tablet (640px) e desktop (1280px)',
+              '- [ ] Sem `innerHTML` com dados externos',
+              '- [ ] Alt text em todas as imagens adicionadas',
+              '- [ ] Conventional Commit no histórico de commits',
+            ].join('\n');
+
+            const pr = await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              title: `feat: ${issueTitle}`,
+              body:  prBody,
+              head:  branchName,
+              base:  'main',
+              draft: true,
+            });
+
+            core.setOutput('pr_url', pr.data.html_url);
+            core.setOutput('pr_number', pr.data.number);
+            return pr.data.html_url;
+
+      - name: Comentar na issue com links gerados
+        uses: actions/github-script@v7
+        env:
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          BRANCH_NAME: ${{ steps.branch.outputs.branch }}
+          PR_URL: ${{ steps.pr.outputs.pr_url }}
+        with:
+          script: |
+            const comment = [
+              '## 🤖 Coding Agent — Tarefa iniciada!',
+              '',
+              `Uma branch e um Draft PR foram criados automaticamente para esta issue.`,
+              '',
+              `| Item | Detalhe |`,
+              `|------|---------|`,
+              `| 🌿 Branch | \`${process.env.BRANCH_NAME}\` |`,
+              `| 🔀 Draft PR | ${process.env.PR_URL} |`,
+              '',
+              '**Próximos passos:**',
+              '1. Faça checkout da branch acima',
+              '2. Implemente a solução seguindo os padrões do projeto',
+              '3. Marque o PR como "Ready for Review" quando concluído',
+              '4. Aguarde aprovação e merge',
+            ].join('\n');
+
+            await github.rest.issues.createComment({
+              owner:        context.repo.owner,
+              repo:         context.repo.repo,
+              issue_number: parseInt(process.env.ISSUE_NUMBER),
+              body:         comment,
+            });
