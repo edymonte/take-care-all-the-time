@@ -369,14 +369,14 @@ body {
   gap: 0;
   padding: 0;
   overflow: hidden;
-  min-height: 340px;
+  min-height: 420px;
   background: var(--bg3);
 }
 
 .natacao-img-wrap {
   position: relative;
-  flex: 1.2;
-  min-height: 340px;
+  flex: 1.4;
+  min-height: 420px;
   overflow: hidden;
 }
 
@@ -384,12 +384,25 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center 30%;
   display: block;
-  transition: transform 6s ease;
+  /* Animação contínua: respira levemente como se estivesse vivo */
+  animation: swim-breathe 8s ease-in-out infinite;
+  transition: transform .6s ease;
+}
+
+@keyframes swim-breathe {
+  0%   { transform: scale(1)    translateX(0);   }
+  25%  { transform: scale(1.04) translateX(-8px); }
+  50%  { transform: scale(1.07) translateX(0);   }
+  75%  { transform: scale(1.04) translateX(8px);  }
+  100% { transform: scale(1)    translateX(0);   }
 }
 
 .card-natacao:hover .natacao-img {
-  transform: scale(1.06);
+  animation-play-state: paused;
+  transform: scale(1.1);
+  transition: transform 1.2s ease;
 }
 
 .natacao-overlay {
@@ -397,9 +410,25 @@ body {
   inset: 0;
   background: linear-gradient(
     90deg,
-    rgba(13,13,15,.1) 0%,
-    rgba(13,13,15,.5) 100%
+    rgba(13,13,15,.04) 0%,
+    rgba(13,13,15,.35) 85%,
+    rgba(13,13,15,.6)  100%
   );
+  /* Shimmer de luz de água */
+  background-image:
+    linear-gradient(90deg, rgba(13,13,15,.04) 0%, rgba(13,13,15,.35) 85%, rgba(13,13,15,.6) 100%),
+    repeating-linear-gradient(
+      -45deg,
+      rgba(255,255,255,0) 0px,
+      rgba(255,255,255,.025) 2px,
+      rgba(255,255,255,0) 4px
+    );
+  animation: water-shimmer 3s ease-in-out infinite alternate;
+}
+
+@keyframes water-shimmer {
+  from { opacity: .85; }
+  to   { opacity: 1;   }
 }
 
 .natacao-content {
@@ -556,7 +585,7 @@ body {
   }
 
   .natacao-img-wrap {
-    min-height: 260px;
+    min-height: 300px;
     flex: none;
   }
 
@@ -604,7 +633,7 @@ body {
     flex-direction: column;
   }
 
-  .natacao-img-wrap { min-height: 220px; flex: none; }
+  .natacao-img-wrap { min-height: 260px; flex: none; }
 
   .footer-inner {
     grid-template-columns: 1fr;
