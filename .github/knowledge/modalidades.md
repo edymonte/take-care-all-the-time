@@ -45,7 +45,8 @@
 - **Público**: Crianças a adultos, iniciantes a competidores
 - **Diferenciais**: Piscina semiolímpica aquecida, turmas segmentadas por nível e faixa etária
 - **Tipo de card**: Destaque full-width com foto de piscina (`.card-natacao`)
-- **Foto Unsplash atual**: `photo-1560090995-e9a16f3843cb` (nadador competitivo em ação na piscina)
+- **Foto Unsplash atual**: `photo-1649556399012-259601ed7954` — verificado: "a man swimming in a pool surrounded by flags" (borboleta, piscina olímpica Tokyo)
+- **URL completa**: `https://images.unsplash.com/photo-1649556399012-259601ed7954?auto=format&fit=crop&w=1600&q=90`
 - **Descrição atual**:
   > "Nossa piscina semiolímpica aquecida é o espaço perfeito para nadar com alegria e saúde. Turmas para todas as idades, do iniciante ao atleta — venha sentir a leveza da água!"
 

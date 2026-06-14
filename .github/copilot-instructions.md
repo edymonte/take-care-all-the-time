@@ -58,6 +58,13 @@
 - Headers de segurança configurados via `_headers` (GitHub Pages / Netlify)
 - Dependências externas (CDN/npm) apenas de fontes confiáveis e fixadas na versão
 
+## Imagens Unsplash — Regra Anti-Alucinação
+- **NUNCA** inventar ou deduzir IDs de foto do Unsplash
+- **SEMPRE** buscar e verificar o ID real acessando `https://unsplash.com/s/photos/<termo>` antes de usar
+- O ID verificado aparece na URL da imagem (`photo-XXXXXXXXXX`) na página da foto
+- Apenas IDs registrados no arquivo `.github/knowledge/brand-guide.md` (seção "Imagens em uso") podem ser usados sem nova verificação
+- Ao encontrar uma foto adequada, registrar o ID, título e URL verificada na knowledge base antes de aplicar no código
+
 ## Convenções Git
 - **Branches**: `feat/`, `fix/`, `docs/`, `style/`, `chore/`, `refactor/`
 - **Commits**: Conventional Commits em português

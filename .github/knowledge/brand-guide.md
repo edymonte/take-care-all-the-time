@@ -85,11 +85,18 @@
 - Sem logos de concorrentes visíveis
 - Qualidade profissional (iluminação, composição)
 
-### Imagens em uso (URLs ativas)
-| Local            | Descrição                        |
-|------------------|----------------------------------|
-| Hero background  | Academia com pessoas treinando   |
-| Card Natação     | Piscina com pessoas nadando felizes |
+### Imagens em uso (URLs verificadas — não substituir sem nova verificação)
+| Local            | ID Unsplash (verificado)              | Descrição verificada na página          |
+|------------------|---------------------------------------|-----------------------------------------|
+| Hero background  | `photo-1534438327276-14e5300c3a48`    | Academia com pessoas treinando          |
+| Card Natação     | `photo-1649556399012-259601ed7954`    | Homem nadando borboleta — piscina olímpica Tokyo |
+
+### Como verificar um ID Unsplash (obrigatório antes de usar)
+1. Busque em `https://unsplash.com/s/photos/<termo-em-ingles>`
+2. Clique na foto que se encaixa no contexto
+3. Copie o ID da URL: `unsplash.com/photos/<descricao>-**XXXXXX**`
+4. Confirme a URL real da imagem no código-fonte da página (`photo-XXXXXXXXXX`)
+5. Registre aqui antes de aplicar no `index.html`
 
 ---
 
